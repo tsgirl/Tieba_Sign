@@ -23,7 +23,7 @@ if($_GET['action'] == 'logout' && $_GET['hash']==$formhash){
 	$_username = daddslashes($_POST['username']);
 	if($_username == $username) showmessage('请输入其他账户的信息', './#');
 	if(strlen($_username) > 24) showmessage('用户名过长，请修改', dreferer(), 5);
-	$user = DB::fetch_first("SELECT * FROM member WHERE username='{$_username}'");
+	$user = DB::fetch_first("SELECT * FROM member WHERE username='{$_username}' LIMIT 1");
 	$userid = $user['uid'];
 	$verified = Widget_Password::verify($user, $_POST['password']);
 	if($verified){
@@ -63,7 +63,7 @@ if($_GET['action'] == 'logout' && $_GET['hash']==$formhash){
 		if(!$str) showmessage('链接有误，请重新获取', './');
 		list($uid, $exptime, $password, $random) = explode("\t", $str);
 		if($exptime < TIMESTAMP) showmessage('链接已过期，请重新获取', './');
-		$user = DB::fetch_first("SELECT * FROM member WHERE uid='{$uid}' AND password='{$password}'");
+		$user = DB::fetch_first("SELECT * FROM member WHERE uid='{$uid}' AND password='{$password}' LIMIT 1");
 		if(!$user) showmessage('链接已经失效，请重新获取', './');
 		$new_password = random(10);
 		$newpassword = Widget_Password::encrypt($user, $new_password);
@@ -135,7 +135,7 @@ EOF;
 			if(strlen($username) > 24) showmessage('用户名过长，请修改', dreferer(), 5);
 			$un = strtolower($username);
 			if(strexists($un, 'admin') || strexists($un, 'guanli')) showmessage('用户名不和谐，请修改', dreferer(), 5);
-			$user = DB::fetch_first("SELECT * FROM member WHERE username='{$username}'");
+			$user = DB::fetch_first("SELECT * FROM member WHERE username='{$username}' LIMIT 1");
 			if($user) showmessage('用户名已经存在', 'member.php');
 			HOOK::run('before_register');
 			$uid = do_register($username, $_POST['password'], $email);

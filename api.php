@@ -1,5 +1,6 @@
 <?php
 define('DISABLE_PLUGIN', true);
+define('DISABLE_CRON', true);
 require_once './system/common.inc.php';
 
 if(!$uid){
@@ -20,12 +21,16 @@ if($_GET['action'] == 'baidu_login'){
 	if(!$_cookie) throw new Exception('Empty response!');
 	if($_GET['formhash'] != $formhash) throw new Exception('Illegal request!');
     if ($_GET['local']) {
-        $cookie = $_cookie;
+        if (substr($_cookie, 0, 6)=="BDUSS="){
+            $cookie = $_cookie;
+        }else{
+            $cookie = "BDUSS=".$_cookie;
+        }
     } else {
         $cookie = authcode(pack('H*', $_cookie), 'DECODE', cloud::key());
     }
 	if(!$cookie) showmessage('非法调用！', './#baidu_bind', 1);
-    if (!verify_cookie($cookie)) showmessage('无法登陆百度贴吧，请尝试重新绑定' . ($_GET['local'] ? '' : '<form action="api.php?action=receive_cookie&formhash=' . $formhash . '" method="post"><input type="hidden" name="cookie" value="' . $_cookie . '"></from><script type="text/javascript">setTimeout(function(){ document.forms[0].submit(); }, 2000);</script>'));
+  if (!verify_cookie($cookie)) showmessage('无法登陆百度贴吧，请尝试重新绑定' . ($_GET['local'] ? '' : '<form action="api.php?action=receive_cookie&formhash=' . $formhash . '" method="post"><input type="hidden" name="cookie" value="' . $_cookie . '"></from><script type="text/javascript">setTimeout(function(){ document.forms[0].submit(); }, 2000);</script>'));
 	save_cookie($uid, $cookie);
 	showmessage('绑定百度账号成功！<br>正在同步喜欢的贴吧...<script type="text/javascript" src="index.php?action=refresh_liked_tieba&formhash='.$formhash.'"></script><script type="text/javascript">try{ opener.$("#guide_page_2").hide(); opener.$("#guide_page_manual").hide(); opener.$("#guide_page_3").show(); window.close(); }catch(e){}</script>', './#baidu_bind', 1);
 }

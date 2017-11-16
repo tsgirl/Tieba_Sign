@@ -161,21 +161,25 @@ function load_baidu_bind(){
 	$.getJSON("ajax.php?v=get-bind-status", function(result){
 		if(!result) return;
 		$('#content-baidu_bind .tab').addClass('hidden');
-		if(result.no == 0){
+		if(result.error_code == 0){
 			$('#content-baidu_bind .tab-binded').removeClass('hidden');
 			$('.tab-binded div').removeClass('hidden');
 			$('.tab-binded div').html('');
-			var avatar_img = 'http://tb.himg.baidu.com/sys/portrait/item/' + result.data.user_portrait;
+			//var avatar_img = 'http://tb.himg.baidu.com/sys/portrait/item/' + result.data.user_portrait;
+			//=======更新用户信息接口=======
+			var avatar_img = 'http://himg.baidu.com/sys/portraitm/item/' + result.user.portraith;
 			$('#avatar_img').attr('src', avatar_img);
 			$('#avatar_img').removeClass('hidden');
-			$('.tab-binded div').append('<img src="' + avatar_img + '" class="float-left">');
-			$('.tab-binded div').append('<p>百度通行证：<a href="http://tieba.baidu.com/home/main?un=' + result.data.user_name_url + '" target="_blank">' + result.data.user_name_show + '</a></p>');
-			$('.tab-binded div').append('<p>安全手机：' + result.data.mobilephone + '</p>');
-			$('.tab-binded div').append('<p>安全邮箱：' + result.data.email + '</p>');
+			$('.tab-binded div').append('<img src="http://himg.baidu.com/sys/portraitm/item/' + result.user.portraith + '" class="float-left">');
+			$('.tab-binded div').append('<p>百度帐号：<a href="http://www.baidu.com/p/' + result.user.name + '?ie=utf-8" target="_blank">' + result.user.name + '</a></p>');
+			$('.tab-binded div').append('<p>关注贴吧数：' + result.user.my_like_num + '</p>');
+			$('.tab-binded div').append('<p>发贴量：' + result.user.post_num + '</p>');
+			//$('.tab-binded div').append('<p>吧龄：' + result.user.tb_age + '年</p>');
 		}else{
 			$('#content-baidu_bind .tab-bind').removeClass('hidden');
+			//$('.tab-binded div').append( result.error_code + ':' +result.error_msg);
 		}
-	}).fail(function() { createWindow().setTitle('系统错误').setContent('发生未知错误: 无法获取绑定状态').addButton('确定', function(){ location.reload(); }).append(); }).always(function(){ hideloading(); });
+	}).fail(function() { createWindow().setTitle('系统错误').setContent('发生未知错误: 无法获取帐号信息').addButton('确定', function(){ location.reload(); }).append(); }).always(function(){ hideloading(); });
 }
 function _status(status){
 	if(typeof status == 'undefined') status = 0;

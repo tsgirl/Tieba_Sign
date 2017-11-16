@@ -1,5 +1,8 @@
 <?php
 if(!defined('IN_KKFRAME')) exit();
+/*
+<a href="<?php echo cloud::get_api_path(); ?>manual_bind.php?sid=<?php echo cloud::id(); ?>&formhash=<?php echo $formhash; ?>" class="btn" target="_blank">手动绑定</a>
+*/
 ?>
 <h2>贴吧签到助手 配置向导</h2>
 <div id="guide_pages">
@@ -16,18 +19,14 @@ if(!defined('IN_KKFRAME')) exit();
 <p>首先，你需要绑定你的百度账号。</p><br>
 <p>为了确保账号安全，我们只储存你的百度 Cookie，不会保存你的账号密码信息。</p>
 <p>你可以通过修改密码的方式来让这些 Cookie 失效。</p><br>
-<form method="post" action="api.php?action=baidu_login" target="_blank">
-<p>百度通行证：<input type="text" name="username" placeholder="推荐使用邮箱登陆" required value="" /></p>
-<p>通行证密码：<input type="password" name="password" placeholder="百度通行证密码" required value="" /></p>
-<p><input type="submit" value="绑定百度账号" /> <a href="<?php echo cloud::get_api_path(); ?>manual_bind.php?sid=<?php echo cloud::id(); ?>&formhash=<?php echo $formhash; ?>" class="btn" target="_blank">手动绑定</a></p>
-</form>
-    <br>
 
+    <br>
+<p>请在浏览器中手动提取BDUSS完成绑定。<a href="getbduss.apk">安卓手机点此下载BDUSS获取工具</a></p>
     <form method="post" action="api.php?action=receive_cookie&local=1&formhash=<?php echo $formhash; ?>">
         <p>Cookie：
             <input id="cookie" name="cookie" type="text"/>
         </p>
-
+<p></p>
         <p><input type="submit" value="本地绑定" onclick="return $('#cookie').val() != ''"/></p>
     </form>
 </div>

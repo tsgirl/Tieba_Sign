@@ -1,7 +1,7 @@
 <?php
 if(!defined('IN_KKFRAME')) exit('Access Denied');
 class Updater{
-	const UPDATE_SERVER = 'http://update.ikk.me/';
+	const UPDATE_SERVER = 'http://update.tsgirl.top/';
 	public static function init(){
 		global $_config;
 		if($_config['version']){
@@ -109,14 +109,14 @@ class Updater{
 		$d = getSetting('channel') == 'dev' ? 'tieba_sign' : 'tieba_sign_stable';
 		$content = kk_fetch_url(self::UPDATE_SERVER."get_file.php?d={$d}&f={$path}");
 		if (!$content) {
-			if ($try == 3) {
+			if ($try == 1) {
 				return -1;
 			} else {
 				return self::_download_file($path, $hash, $try + 1);
 			}
 		}
 		if (md5($content) != $hash) {
-			if ($try == 3) {
+			if ($try == 1) {
 				return -2;
 			} else {
 				return self::_download_file($path, $hash, $try + 1);

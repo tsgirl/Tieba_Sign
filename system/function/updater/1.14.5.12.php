@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS `process` (
   `id` varchar(16) NOT NULL,
   `exptime` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MEMORY DEFAULT CHARSET=utf8;
+) ENGINE=MEMORY DEFAULT CHARSET=utf8mb4;
 EOF;
 $res = DB::query($sql, 'SILENT');
 if(!$res) DB::query(str_replace('MEMORY', 'MyISAM', $sql));

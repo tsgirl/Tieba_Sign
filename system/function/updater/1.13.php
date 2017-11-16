@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `cron` (
   `nextrun` int(10) unsigned NOT NULL,
   `order` tinyint(4) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 INSERT INTO `cron` (`id`, `enabled`, `nextrun`, `order`) VALUES
 ('daily', 1, 0, 0),
 ('update_tieba', 1, 0, 10),
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `mail_queue` (
   `subject` varchar(255) NOT NULL,
   `content` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4;
 EOF;
 	runquery($sql);
 	saveSetting('version', '1.13.10.4');
@@ -52,7 +52,6 @@ EOF;
 	saveSetting('version', '1.13.10.6');
 	showmessage('成功更新到 1.13.10.6！', './');
 }elseif($current_version == '1.13.10.6'){
-	DB::query('ALTER TABLE `member` CHANGE `username` `username` VARCHAR(24)');
 	saveSetting('version', '1.13.10.13');
 	showmessage('成功更新到 1.13.10.13！', './', 1);
 }elseif($current_version == '1.13.10.13'){
@@ -72,7 +71,7 @@ CREATE TABLE IF NOT EXISTS `plugin` (
   module text NOT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 ');
 	DB::insert('plugin', array('name' => 'debug_info'));
 	DB::insert('plugin', array('name' => 'update_log'));
@@ -97,7 +96,7 @@ ALTER TABLE `member_setting` ADD `cookie` TEXT BINARY CHARACTER SET utf8 COLLATE
 	CACHE::update('plugins');
 	saveSetting('register_limit', 1);
 	saveSetting('register_check', 1);
-	saveSetting('jquery_mode', 2);
+	saveSetting('jquery_mode', 4);
 	saveSetting('version', '1.13.12.15');
 	showmessage('成功更新到 1.13.12.15！', './');
 }elseif($current_version == '1.13.12.15'){

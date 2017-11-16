@@ -43,6 +43,7 @@ class db_mysql {
 				$this->halt('MySQL Query ERROR', $sql);
 			}
 		}
+		DEBUG::query_counter();
 		return $this->last_query = $query;
 	}
 	function affected_rows() {
