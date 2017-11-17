@@ -1,7 +1,7 @@
 <?php
 define('DISABLE_PLUGIN', true);
 define('DISABLE_CRON', true);
-require_once './system/common.inc.php';
+require_once dirname(__FILE__).'/system/common.inc.php';
 
 if(!$uid){
 	header('Location: member.php');
@@ -15,7 +15,8 @@ if($_GET['action'] == 'baidu_login'){
 	$parm_string = bin2hex($parm_string);
 	header('Location: '.cloud::get_api_path().'login.php?sid='.cloud::id().'&parm='.$parm_string);
 }elseif($_GET['action'] == 'register_cloud'){
-	cloud::do_register();
+  $verbose=isset($_GET['verbose'])?true:false;
+	cloud::do_register($verbose);
 }elseif($_GET['action'] == 'receive_cookie'){
 	$_cookie = $_POST['cookie'] ? $_POST['cookie'] : $_GET['cookie'];
 	if(!$_cookie) throw new Exception('Empty response!');

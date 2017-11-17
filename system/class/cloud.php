@@ -15,12 +15,24 @@ class cloud {
 		list($id, $key) = $id_key;
 		if (!$id || !$key) define('CLOUD_NOT_INITED', true);
 	}
-	public static function do_register(){
+	public static function do_register($verbose=false){
 		global $siteurl;
 		list($id, $key) = self::_get_id_and_key();
-		if ($id && $key) return true;
-		$ret = kk_fetch_url(self::API_ROOT_HTTPS.'register.php', 0, 'url='.bin2hex(authcode($siteurl, 'ENCODE', 'CLOUD-REGISTER')));
-		if(!$ret) return false;
+		if ($id && $key){
+			if($verbose){
+		    throw new Exception('已注册');
+		  }else{
+		    return true;
+		  }
+		}
+		$ret = kk_fetch_url(self::API_ROOT.'register.php', 0, 'url='.bin2hex(authcode($siteurl, 'ENCODE', 'CLOUD-REGISTER')));
+		if(!$ret){
+		  if($verbose){
+		    throw new Exception('Fail to connect to cloud system.');
+		  }else{
+		    return false;
+		  }
+		}
 		list($errno, $sid, $key) = explode("\t", $ret);
 		if($errno != 1) throw new Exception('Fail to register in cloud system.');
 		saveSetting('cloud', authcode("{$sid}\t{$key}", 'ENCODE', '-TiebaSignAPI-'));
@@ -34,7 +46,7 @@ class cloud {
 		}*/
 	}
 	public static function get_api_path(){
-		return getSetting('use_sae_api') ? self::API_ROOT_SAE : self::API_ROOT_HTTPS;
+		return getSetting('use_sae_api') ? self::API_ROOT_SAE : self::API_ROOT;
 	}
 	public static function sync(){
 		global $siteurl;
@@ -48,7 +60,7 @@ class cloud {
 		$parm_string = serialize($parms);
 		$parm_string = authcode($parm_string, 'ENCODE', self::key());
 		$parm_string = bin2hex($parm_string);
-		$res = kk_fetch_url(self::API_ROOT_HTTPS."{$api_name}.php?sid=".self::id(), 0, 'parm='.$parm_string);
+		$res = kk_fetch_url(self::API_ROOT."{$api_name}.php?sid=".self::id(), 0, 'parm='.$parm_string);
 		if (!$res) throw new Exception('Request remote api failed: empty response!');
 		$ret = unserialize($res);
 		if (!$ret) throw new Exception('Request remote api failed: decode fail');
@@ -61,7 +73,7 @@ class cloud {
 		$parm_string = serialize($parms);
 		$parm_string = authcode($parm_string, 'ENCODE', 'Tieba Sign API - DEBUG');
 		$parm_string = bin2hex($parm_string);
-		$res = kk_fetch_url(self::API_ROOT_HTTPS."{$api_name}.php?sid=0", 0, 'parm='.$parm_string);
+		$res = kk_fetch_url(self::API_ROOT."{$api_name}.php?sid=0", 0, 'parm='.$parm_string);
 		if (!$res) throw new Exception('Request remote api failed: empty response!');
 		$ret = unserialize($res);
 		if (!$ret) throw new Exception('Request remote api failed: decode fail');
@@ -74,7 +86,7 @@ class cloud {
 		$parm_string = serialize($parms);
 		$parm_string = authcode($parm_string, 'ENCODE', self::key());
 		$parm_string = bin2hex($parm_string);
-		$res = kk_fetch_url(self::API_ROOT_HTTPS."{$api_name}.php?sid=".self::id(), 0, 'parm='.$parm_string);
+		$res = kk_fetch_url(self::API_ROOT."{$api_name}.php?sid=".self::id(), 0, 'parm='.$parm_string);
 		if (!$res) return -1;
 		$ret = unserialize($res);
 		if (!$ret) return -2;

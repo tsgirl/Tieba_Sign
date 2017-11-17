@@ -240,17 +240,17 @@ function jquery_path(){
 			return 'system/js/jquery.min.js';
 	}
 }
-function kk_fetch_url($url, $limit = 0, $post = '', $cookie = '', $ignore = FALSE, $ip = '', $timeout = 15, $block = TRUE, $encodetype  = 'URLENCODE', $allowcurl = TRUE, $position = 0) {
+function kk_fetch_url($url, $limit = 0, $post = '', $cookie = '', $ignore = FALSE, $ip = '', $timeout = 20, $block = TRUE, $encodetype  = 'URLENCODE', $allowcurl = TRUE, $position = 0) {
 	$return = '';
 	$matches = parse_url($url);
 	$scheme = $matches['scheme'];
 	$host = $matches['host'];
 	$path = $matches['path'] ? $matches['path'].($matches['query'] ? '?'.$matches['query'] : '') : '/';
-	$port = !empty($matches['port']) ? $matches['port'] : 80;
+	$port = !empty($matches['port']) ? ':'.$matches['port'] : '';
 	if(function_exists('curl_init') && function_exists('curl_exec') && $allowcurl) {
 		$ch = curl_init();
-		$ip && curl_setopt($ch, CURLOPT_HTTPHEADER, array("Host: ".$host));
-		curl_setopt($ch, CURLOPT_URL, $scheme.'://'.($ip ? $ip : $host).':'.$port.$path);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array("Host: ".$host));
+		curl_setopt($ch, CURLOPT_URL, $scheme.'://'.($ip ? $ip : $host).$port.$path);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		if($post) {
 			curl_setopt($ch, CURLOPT_POST, 1);
@@ -266,8 +266,10 @@ function kk_fetch_url($url, $limit = 0, $post = '', $cookie = '', $ignore = FALS
 		}
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
 		curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+		curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36');
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 		$data = curl_exec($ch);
 		$status = curl_getinfo($ch);
 		$errno = curl_errno($ch);
