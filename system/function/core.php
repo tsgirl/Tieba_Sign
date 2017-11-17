@@ -266,6 +266,8 @@ function kk_fetch_url($url, $limit = 0, $post = '', $cookie = '', $ignore = FALS
 		}
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
 		curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 		$data = curl_exec($ch);
 		$status = curl_getinfo($ch);
 		$errno = curl_errno($ch);
