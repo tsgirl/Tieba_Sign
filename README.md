@@ -1,5 +1,4 @@
 # Tieba_Sign
 百度贴吧签到
 Forked from kookxiang/Tieba_Sign
-
-Continue developing after abandoned by original author to make it at least usable.
+This repository has been deprecated -- please go to https://github.com/tsgirl/Tieba_Sign_new/
