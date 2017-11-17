@@ -17,13 +17,13 @@ DROP TABLE IF EXISTS `sign_log`;
 DROP TABLE IF EXISTS `update_source`;
 
 CREATE TABLE IF NOT EXISTS `cache` (
-  `k` text NOT NULL,
+  `k` varchar(32) NOT NULL,
   `v` text NOT NULL,
   PRIMARY KEY (`k`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `cron` (
-  `id` text NOT NULL,
+  `id` varchar(16) NOT NULL,
   `enabled` tinyint(1) NOT NULL,
   `nextrun` int(10) unsigned NOT NULL,
   `order` tinyint(4) NOT NULL,
@@ -39,31 +39,31 @@ INSERT INTO `cron` (`id`, `enabled`, `nextrun`, `order`) VALUES
 ('update_tieba', 1, 0, 10);
 
 CREATE TABLE IF NOT EXISTS `download` (
-  `path` text NOT NULL,
+  `path` varchar(128) NOT NULL,
   `content` text NOT NULL,
   PRIMARY KEY (`path`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `mail_queue` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `to` text NOT NULL,
-  `subject` text NOT NULL,
+  `to` varchar(255) NOT NULL,
+  `subject` varchar(255) NOT NULL,
   `content` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `member` (
   `uid` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `username` text DEFAULT NULL,
-  `password` text NOT NULL,
-  `email` text NOT NULL,
+  `username` varchar(24) DEFAULT NULL,
+  `password` varchar(32) NOT NULL,
+  `email` varchar(32) NOT NULL,
   PRIMARY KEY (`uid`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `member_bind` (
   `uid` int(10) unsigned NOT NULL,
   `_uid` int(10) unsigned NOT NULL,
-  `username` text NOT NULL,
+  `username` varchar(12) NOT NULL,
   KEY `uid` (`uid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
@@ -81,8 +81,8 @@ CREATE TABLE IF NOT EXISTS `my_tieba` (
   `tid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `uid` int(10) unsigned NOT NULL,
   `fid` int(10) unsigned NOT NULL,
-  `name` text NOT NULL,
-  `unicode_name` text NOT NULL,
+  `name` varchar(127) NOT NULL,
+  `unicode_name` varchar(512) NOT NULL,
   `skiped` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`tid`),
   KEY `uid` (`uid`)
@@ -91,8 +91,8 @@ CREATE TABLE IF NOT EXISTS `my_tieba` (
 CREATE TABLE IF NOT EXISTS `plugin` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `enable` tinyint(1) NOT NULL DEFAULT '1',
-  `name` text NOT NULL,
-  `version` text NOT NULL DEFAULT '0',
+  `name` varchar(64) NOT NULL,
+  `version` varchar(8) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8mb4;
@@ -101,15 +101,15 @@ INSERT INTO `plugin` (`id`, `enable`, `name`, `version`) VALUES
 (1, 1, 'debug_info', '');
 
 CREATE TABLE IF NOT EXISTS `plugin_var` (
-  `pluginid` text NOT NULL,
-  `key` text NOT NULL DEFAULT '',
+  `pluginid` varchar(64) NOT NULL,
+  `key` varchar(32) NOT NULL DEFAULT '',
   `value` text NOT NULL,
   PRIMARY KEY (`pluginid`,`key`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `setting` (
-  `k` text NOT NULL,
-  `v` text NOT NULL,
+  `k` varchar(32) NOT NULL,
+  `v` varchar(256) NOT NULL,
   PRIMARY KEY (`k`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
@@ -125,7 +125,7 @@ CREATE TABLE IF NOT EXISTS `sign_log` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `update_source` (
-  `id` text NOT NULL,
-  `path` text NOT NULL,
+  `id` varchar(16) NOT NULL,
+  `path` varchar(128) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;

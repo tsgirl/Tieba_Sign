@@ -4,7 +4,7 @@ function is_admin($uid){
 	return in_array($uid, explode(',', getSetting('admin_uid')));
 }
 function is_email($string){
-	return preg_match('/^[A-z0-9._-]+@[A-z0-9._-]+\.[A-z0-9._-]+$/', $string);
+	return preg_match('/^[A-z0-9\.\_-]+@[A-z0-9\.\_-]+\.[A-z0-9\.\_-]+$/', $string);
 }
 function dsetcookie($name, $value = '', $exp = 2592000){
 	$exp = $value ? TIMESTAMP + $exp : '1';
@@ -38,7 +38,7 @@ function template($file){
 	if(file_exists($path)) return $path;
 	$path = ROOT."./template/default/{$file}.php";
 	if(file_exists($path)) return $path;
-	error::system_error("Missing template '{$file}'.");
+	kerror::system_error("Missing template '{$file}'.");
 }
 function dgmdate($timestamp, $d_format = 'Y-m-d H:i') {
 	$timestamp += 8 * 3600;
@@ -112,7 +112,7 @@ function authcode($string, $operation = 'DECODE', $key = '', $expiry = 0) {
 	}
 }
 function showmessage($msg = '', $redirect = '', $delay = 3){
-	if($_GET['format'] == 'json'){
+	if(isset($_GET['format'])&&$_GET['format'] == 'json'){
 		$result = array('msg' => $msg, 'redirect' => $redirect, 'delay' => $delay);
 		echo json_encode($result);
 		exit();
@@ -186,7 +186,7 @@ function get_cookie($uid){
 }
 function save_cookie($uid, $cookie){
 	$cookie = base64_encode($cookie);
-	DB::result_first("UPDATE member_setting SET cookie='{$cookie}' WHERE uid='{$uid}'");
+	DB::query("UPDATE member_setting SET cookie='{$cookie}' WHERE uid='{$uid}'");
 }
 function get_username($uid){
 	static $username = array();
@@ -205,7 +205,7 @@ function get_setting($uid){
 	}
 	return $user_setting[$uid] = $cached_result;
 }
-function getSetting($k, $force = false){
+function getSetting($k, $force = true){
 	if($force) return $setting[$k] = DB::result_first("SELECT v FROM setting WHERE k='{$k}'");
 	$cache = CACHE::get('setting');
 	return $cache[$k];

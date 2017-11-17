@@ -12,7 +12,7 @@ class smtp extends mailer{
 		array('SMTP 密码', 'smtp_pass', '', '', 'password'),
 	);
 	function isAvailable(){
-		return !isset($_SERVER['HTTP_APPVERSION']) && $_SERVER['USER'] != 'bae';
+		return !isset($_SERVER['HTTP_APPVERSION']);
 	}
 	function send($mail){
 		$smtp = new _smtp($this);
@@ -41,7 +41,7 @@ class _smtp {
 	private $logArray = array();
 	public $Error = '';
 
-	public function _smtp($obj){
+	public function __smtp($obj){
 		$this->smtpServer = $obj->_get_setting('smtp_server');
 		$this->address = $obj->_get_setting('address');
 		$this->username = $obj->_get_setting('smtp_name');

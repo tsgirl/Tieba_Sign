@@ -4,7 +4,7 @@ define('DISABLE_PLUGIN', true);
 require_once './system/common.inc.php';
 if(!is_admin($uid)) exit();
 $formhash = substr(md5(substr(TIMESTAMP, 0, -7).$username.$uid.SYS_KEY.ROOT.'ADMINCP_ONLY'), 5, 14);
-
+if(!isset($_GET['action'])) $_GET['action']='';
 switch($_GET['action']){
 	case 'load_userstat':
 		$data = array();
@@ -171,7 +171,7 @@ switch($_GET['action']){
 		if($formhash != $_GET['formhash']) showmessage('来源不可信，请重试', 'admin.php#plugin');
 		require_once SYSTEM_ROOT.'./class/plugin.php';
 		$plugin_id = $_GET['pluginid'];
-		if(preg_match('/[^A-Za-z0-9_-.]/', $plugin_id)) showmessage('插件ID不合法，请与插件作者联系', 'admin.php#plugin');
+		if(preg_match('/[^A-Za-z0-9_\-\.]/', $plugin_id)) showmessage('插件ID不合法，请与插件作者联系', 'admin.php#plugin');
 		$classfile = ROOT.'./plugins/'.$plugin_id.'/plugin.class.php';
 		if(!file_exists($classfile)) showmessage('插件文件缺失，请与插件作者联系', 'admin.php#plugin');
 		require_once $classfile;
@@ -200,7 +200,7 @@ switch($_GET['action']){
 	case 'uninstall_plugin':
 		if($formhash != $_GET['formhash']) showmessage('来源不可信，请重试', 'admin.php#plugin');
 		$plugin_id = $_GET['pluginid'];
-		if(preg_match('/[^A-Za-z0-9_-.]/', $plugin_id)) showmessage('插件ID不合法，请与插件作者联系', 'admin.php#plugin');
+		if(preg_match('/[^A-Za-z0-9_\-\.]/', $plugin_id)) showmessage('插件ID不合法，请与插件作者联系', 'admin.php#plugin');
 		DB::query("DELETE FROM `plugin` WHERE name='{$plugin_id}'");
 		DB::query("DELETE FROM plugin_var WHERE pluginid='".addslashes($plugin_id)."'");
 		$classfile = ROOT.'./plugins/'.$plugin_id.'/plugin.class.php';
@@ -234,7 +234,7 @@ switch($_GET['action']){
 	case 'enable_plugin':
 		if($formhash != $_GET['formhash']) showmessage('来源不可信，请重试', 'admin.php#plugin');
 		$plugin_id = $_GET['pluginid'];
-		if(preg_match('/[^A-Za-z0-9_-.]/', $plugin_id)) showmessage('插件ID不合法，请与插件作者联系', 'admin.php#plugin');
+		if(preg_match('/[^A-Za-z0-9_\-\.]/', $plugin_id)) showmessage('插件ID不合法，请与插件作者联系', 'admin.php#plugin');
 		DB::query("UPDATE `plugin` SET `enable`=1 WHERE name='{$plugin_id}'");
 		$classname = "plugin_{$plugin_id}";
 		$obj = new $classname();
@@ -273,7 +273,7 @@ switch($_GET['action']){
 	case 'disable_plugin':
 		if($formhash != $_GET['formhash']) showmessage('来源不可信，请重试', 'admin.php#plugin');
 		$plugin_id = $_GET['pluginid'];
-		if(preg_match('/[^A-Za-z0-9_-.]/', $plugin_id)) showmessage('插件ID不合法，请与插件作者联系', 'admin.php#plugin');
+		if(preg_match('/[^A-Za-z0-9_\-\.]/', $plugin_id)) showmessage('插件ID不合法，请与插件作者联系', 'admin.php#plugin');
 		DB::query("UPDATE `plugin` SET `enable`=0 WHERE name='{$plugin_id}'");
 		$classname = "plugin_{$plugin_id}";
 		$obj = new $classname ();
@@ -289,7 +289,7 @@ switch($_GET['action']){
 	case 'config_plugin':
 		$plugin_id = $_REQUEST['pluginid'];
 		if($_POST['submit'] && $formhash != $_GET['formhash']) showmessage('来源不可信，请重试', 'admin.php#plugin');
-		if(preg_match('/[^A-Za-z0-9_-.]/', $plugin_id)) showmessage('插件ID不合法，请与插件作者联系', 'admin.php#plugin');
+		if(preg_match('/[^A-Za-z0-9_\-\.]/', $plugin_id)) showmessage('插件ID不合法，请与插件作者联系', 'admin.php#plugin');
 		$classfile = ROOT.'./plugins/'.$plugin_id.'/plugin.class.php';
 		if(!file_exists($classfile)) showmessage('插件文件缺失，请与插件作者联系', 'admin.php#plugin');
 		require_once $classfile;
@@ -402,7 +402,7 @@ switch($_GET['action']){
 		break;
 	case 'set_template':
 		if($formhash != $_GET['formhash']) showmessage('来源不可信，请重试', 'admin.php#plugin');
-		if(preg_match('/[^A-Za-z0-9_-.]/', $_GET['template'])) showmessage('模板ID（文件夹名）不合法，请与模板作者联系', 'admin.php#template');
+		if(preg_match('/[^A-Za-z0-9_\-\.]/', $_GET['template'])) showmessage('模板ID（文件夹名）不合法，请与模板作者联系', 'admin.php#template');
 		$templatefile = ROOT.'./template/'.$_GET['template'].'/template.xml';
 		if (file_exists($templatefile)) {
 			$info = xml2array(file_get_contents($templatefile));

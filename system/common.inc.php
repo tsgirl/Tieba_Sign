@@ -1,21 +1,26 @@
 <?php
-error_reporting(E_ALL ^ E_NOTICE);
+error_reporting(E_ERROR | E_PARSE | E_WARNING);
 define('IN_KKFRAME', true);
 define('SYSTEM_ROOT', dirname(__FILE__).'/');
 define('ROOT', dirname(SYSTEM_ROOT).'/');
 define('TIMESTAMP', time());
-define('VERSION', '1.17.11.11');
+define('VERSION', '1.17.11.17');
 define('UI_VERSION', '1.0');
 
-define('DEBUG_ENABLED', isset($_GET['debug']));
-error_reporting(DEBUG_ENABLED ? E_ALL & !E_NOTICE & !E_STRICT : E_ERROR | E_PARSE);
-@ini_set('display_errors', DEBUG_ENABLED);
+//define('DEBUG_ENABLED', isset($_GET['debug']));
+//error_reporting(DEBUG_ENABLED ? E_ALL & !E_NOTICE & !E_STRICT : E_ERROR | E_PARSE);
+//@ini_set('display_errors', DEBUG_ENABLED);
 
-require_once SYSTEM_ROOT.'./class/error.php';
-set_exception_handler(array('error', 'exception_error'));
+require_once SYSTEM_ROOT.'./class/kerror.php';
+set_exception_handler(array('kerror', 'exception_error'));
 
 function class_loader($class_name){
-	list($type, $plugin_id) = explode('_', strtolower($class_name), 2);
+  if(stristr(strtolower($class_name), '_')){
+	  list($type, $plugin_id) = explode('_', strtolower($class_name), 2);
+	}else{
+	  $type='';
+	  $plugin_id=$class_name;
+	}
 	if ($type == 'plugin' && $plugin_id) {
 		$file_path = "plugins/{$plugin_id}/plugin.class.php";
 	} elseif ($type == 'widget') {

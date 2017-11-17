@@ -1,10 +1,10 @@
 <?php
-require_once './system/common.inc.php';
+require_once dirname(__file__).'/system/common.inc.php';
 
 if(!$uid){
 	header('Location: member.php');
 	exit();
-}elseif($_GET['action']){
+}elseif(isset($_GET['action'])){
 	switch($_GET['action']){
 		case 'skip_tieba':
 			if($_GET['formhash'] != $formhash) break;
@@ -84,10 +84,10 @@ if(!$uid){
 	exit();
 }
 
-if($_GET['ignore_update']){
+if(isset($_GET['ignore_update'])&&$_GET['ignore_update']){
 	dsetcookie('ignore_update', '1', 7200);
 	exit();
-}elseif(is_admin($uid) && !$_COOKIE['ignore_update']){
+}elseif(is_admin($uid) && !(isset($_COOKIE['ignore_update'])&&$_COOKIE['ignore_update'])){
 	if(getSetting('new_version')) define('NEW_VERSION', true);
 }
 if(is_admin($uid) && getSetting('next_cron') < TIMESTAMP - 7200) define('CRON_ERROR', true);

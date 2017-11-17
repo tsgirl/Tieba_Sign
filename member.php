@@ -1,6 +1,7 @@
 <?php
 require_once './system/common.inc.php';
 $invite_code = getSetting('invite_code');
+if(!isset($_GET['action'])) $_GET['action']='';
 if($_GET['action'] == 'logout' && $_GET['hash']==$formhash){
 	dsetcookie('token', '');
 	$_COOKIE['token'] = '';

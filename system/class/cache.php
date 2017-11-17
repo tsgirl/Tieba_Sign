@@ -4,7 +4,7 @@ $_CACHE = array();
 class CACHE {
 	public static function pre_fetch(){
 		global $_CACHE;
-		if (isset($_CACHE[$key])) return $_CACHE[$key];
+		if (isset($key)&&isset($_CACHE[$key])) return $_CACHE[$key];
 		$cache_keys = func_get_args();
 		$query = DB::query("SELECT * FROM cache WHERE k IN ('".implode("', '", $cache_keys)."')", 'SILENT');
 		while($cache = DB::fetch($query)){

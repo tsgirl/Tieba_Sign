@@ -17,7 +17,7 @@ function _do_login($uid){
 	$user = DB::fetch_first("SELECT * FROM member WHERE uid='{$uid}'");
 	$password_hash = substr(md5($user['password']), 8, 8);
 	$login_exp = TIMESTAMP + 900;
-	dsetcookie('token', authcode("{$cookiever}\t{$uid}\t{$user[username]}\t{$login_exp}\t{$password_hash}", 'ENCODE'));
+	dsetcookie('token', authcode("{$cookiever}\t{$uid}\t{$user['username']}\t{$login_exp}\t{$password_hash}", 'ENCODE'));
 	HOOK::run('login_user', true, $user);
 }
 

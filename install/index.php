@@ -8,15 +8,38 @@ if($_config){
 }
 
 @touch($config_file);
+// MySQLi Support
+if (!function_exists('mysql_connect') && function_exists('mysqli_connect')) {
+    function mysql_connect($server = 'localhost', $username = 'root', $password = '', $new_link = false, $client_flags = 0) {
+        return new mysqli($server, $username, $password, '');
+    }
+    function mysql_insert_id($link) {
+        return $link->insert_id;
+    }
+    function mysql_select_db($db_name, $link) {
+        return $link->select_db($db_name);
+    }
+    function mysql_query($sql, $link) {
+        return $link->query($sql);
+    }
+    function mysql_error($link) {
+        return $link->error;
+    }
+    function mysql_errno($link) {
+        return $link->errno;
+    }
+}
 
 switch($_GET['step']){
 	default:
+		/*
 		if(defined('SAE_ACCESSKEY')){
 			header('Location: sae.php');
 			exit();
 		}elseif(getenv('OPENSHIFT_APP_NAME')){
 			$extra_script = '<script type="text/javascript">if(confirm("要使用 OpenShift 一键安装向导吗？")) location.href="openshift.php";</script>';
 		}
+		*/
 		$content = '<p>欢迎使用 贴吧签到助手 安装向导！</p><p>本程序将会指引你在服务器上配置好“贴吧签到助手”</p><p>点击右侧的“下一步”按钮开始</p><p class="btns"><button onclick="location.href=\'./?step=check\';">下一步 &raquo;</button>';
 		show_install_page('Welcome', $content);
 		break;
@@ -37,11 +60,11 @@ switch($_GET['step']){
 		$content .= '<p><span>数据库服务器:</span><input type="text" name="db_server" value="localhost" /></p>';
 		$content .= '<p><span>数据库端口:</span><input type="text" name="db_port" value="3306" /></p>';
 		$content .= '<p><span>数据库用户名:</span><input type="text" name="db_username" value="root" /></p>';
-		$content .= '<p><span>数据库密码:</span><input type="password" name="db_password" /></p>';
+		$content .= '<p><span>数据库密码:</span><input type="text" name="db_password" /></p>';
 		$content .= '<p><span>数据库名:</span><input type="text" name="db_name" value="kk_sign" /></p>';
 		if(function_exists('mysql_pconnect')) $content .= '<p><span>&nbsp;</span><label><input type="checkbox" name="pconnect" value="1" /> 保持与数据库服务器的连接</label></p>';
 		$content .= '<br><p><span>管理员用户名:</span><input type="text" name="username" required /></p>';
-		$content .= '<p><span>管理员密码:</span><input type="password" name="password" required /></p>';
+		$content .= '<p><span>管理员密码:</span><input type="text" name="password" required /></p>';
 		$content .= '<p><span>管理员邮箱:</span><input type="text" name="email" required /></p>';
 		$content .= '<p class="btns"><span>&nbsp;</span><input type="submit" value="下一步 &raquo;" /></p>';
 		$content .= '</form></div><div class="waiting hidden"><p>程序正在执行必要的安装步骤，请耐心等待...</p></div>';
@@ -57,15 +80,15 @@ switch($_GET['step']){
 		$db_pconnect = isset($_POST['pconnect']);
 		$function = $db_pconnect ? 'mysql_connect' : 'mysql_pconnect';
 		$link = mysql_connect("{$db_host}:{$db_port}", $db_username, $db_password);
-		if(!$link) show_back('数据库配置', '错误：无法连接数据库服务器！</p><p>'.mysql_error());
+		if(!$link) show_back('数据库配置', '错误：无法连接数据库服务器！</p><p>'.mysql_error($link));
 		$selected = mysql_select_db($db_name, $link);
 		if(!$selected){
 			// 尝试新建
-			mysql_query("CREATE DATABASE `{$db_name}`", $link);
+			$trycreate = mysql_query("CREATE DATABASE `{$db_name}`", $link);
+			if(!$trycreate) show_back('数据库配置', '错误：新建数据库失败</p><p>'.mysql_error($link));
 			$selected = mysql_select_db($db_name, $link);
-			if(!$selected) show_back('数据库配置', '错误：指定的数据库不可用</p><p>'.mysql_error());
 		}
-		mysql_query("SET character_set_connection=utf8, character_set_results=utf8, character_set_client=binary");
+		mysql_query("SET character_set_connection=utf8, character_set_results=utf8, character_set_client=binary", $link);
 		$syskey = random(32);
 		$username = addslashes($_POST['username']);
 		$password = md5($syskey.md5($_POST['password']).$syskey);
@@ -80,11 +103,11 @@ switch($_GET['step']){
 		if(!$version) show_back('正在安装', '安装脚本有误，请重新上传');
 		$err = runquery($install_script, $link);
 		if($err) show_back('正在安装', '安装过程出现错误:</p><p>'.$err);
-		mysql_query("INSERT INTO member SET username='{$username}', password='{$password}', email='{$email}'");
+		mysql_query("INSERT INTO member SET username='{$username}', password='{$password}', email='{$email}'", $link);
 		$uid = mysql_insert_id($link);
-		mysql_query("INSERT INTO member_setting SET uid='{$uid}', cookie=''");
+		mysql_query("INSERT INTO member_setting SET uid='{$uid}', cookie=''", $link);
 		saveSetting('block_register', 1);
-		saveSetting('jquery_mode', 2);
+		saveSetting('jquery_mode', 4);
 		saveSetting('admin_uid', $uid);
 		saveSetting('SYS_KEY', $syskey);
 		$_config = array(
@@ -128,7 +151,7 @@ function runquery($sql, $link){
 		$query = trim($query);
 		if(!$query) continue;
 		$ret = mysql_query($query, $link);
-		if(!$ret) return mysql_error();
+		if(!$ret) return mysql_error($link);
 	}
 }
 

@@ -12,7 +12,26 @@ if($_config){
 }
 
 @touch($config_file);
-
+if (!function_exists('mysql_connect') && function_exists('mysqli_connect')) {
+    function mysql_connect($server = 'localhost', $username = 'root', $password = '', $new_link = false, $client_flags = 0) {
+        return mysqli_connect($server, $username, $password, '');
+    }
+    function mysql_insert_id($link = null) {
+        return mysqli_insert_id($link);
+    }
+    function mysql_select_db($db_name, $link = null) {
+        return mysqli_select_db($link, $db_name);
+    }
+    function mysql_query($db_name, $link = null) {
+        return mysqli_query($link, $db_name);
+    }
+    function mysql_error($link = null) {
+        return mysqli_error($link);
+    }
+    function mysql_errno($link = null) {
+        return mysqli_errno($link);
+    }
+}
 switch($_GET['step']){
 	default:
 		$content = '<p>欢迎使用 贴吧签到助手 安装向导！</p><p>本程序将会指引你在服务器上配置好“贴吧签到助手”</p><p>点击右侧的“下一步”按钮开始</p><br><p>Openshift one-key installer. Thanks to <a href="http://tieba.baidu.com/home/main?un=%D3%F4%C3%C6de%CB%B5" target="_blank">郁闷de说</a></p><p class="btns"><button onclick="location.href=\'./openshift.php?step=database\';">下一步 &raquo;</button>';

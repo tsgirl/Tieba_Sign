@@ -5,7 +5,7 @@ class mailer {
 	function isAvailable() {
 		return false;
 	}
-	function send() {
+	function send($dummy) {
 		return false;
 	}
 	function _get_setting($key) {

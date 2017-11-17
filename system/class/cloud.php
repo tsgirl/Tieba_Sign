@@ -7,7 +7,12 @@ class cloud {
 	const API_ROOT_HTTPS = 'https://api.tsgirl.top/';
 	const API_ROOT_SAE = 'https://api.tsgirl.top/';
 	public static function init(){
-		list($id, $key) = self::_get_id_and_key();
+	  $id_key=self::_get_id_and_key();
+	  if (!$id_key || sizeof($id_key)!=2){
+	    define('CLOUD_NOT_INITED', true);
+	    return;
+	  }
+		list($id, $key) = $id_key;
 		if (!$id || !$key) define('CLOUD_NOT_INITED', true);
 	}
 	public static function do_register(){
@@ -89,7 +94,7 @@ class cloud {
 	}
 	private static function _get_id_and_key(){
 		static $cached_request;
-		if(isset($cached_request)) return $cached_request;
+		if($cached_request) return $cached_request;
 		$encrypted = getSetting('cloud');
 		$cached_request = explode("\t", authcode($encrypted, 'DECODE', '-TiebaSignAPI-'));
 		return $cached_request;

@@ -33,7 +33,7 @@ class core {
 	}
 	function init_useragent() {
 		$ua = strtolower($_SERVER['HTTP_USER_AGENT']);
-		if (strpos($ua, 'wap') || strpos($ua, 'mobi') || strpos($ua, 'opera') || $_GET['mobile']) {
+		if (strpos($ua, 'wap') || strpos($ua, 'mobi') || strpos($ua, 'opera') || isset($_GET['mobile'])) {
 			define('IN_MOBILE', true);
 		} else {
 			define('IN_MOBILE', false);
