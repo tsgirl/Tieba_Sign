@@ -27,7 +27,7 @@ class db_mysql {
    function select_db($dbname) {
     return mysql_select_db($dbname, $this->curlink);
   }
-   function fetch_array($query, $result_type = MYSQLi_ASSOC) {
+   function fetch_array($query, $result_type = MYSQL_ASSOC) {
     return mysql_fetch_array($query, $result_type);
   }
    function fetch_first($sql) {

@@ -25,7 +25,7 @@ class cloud {
 		    return true;
 		  }
 		}
-		$ret = kk_fetch_url(self::API_ROOT.'register.php', 0, 'url='.bin2hex(authcode($siteurl, 'ENCODE', 'CLOUD-REGISTER')));
+		$ret = kk_fetch_url(self::API_ROOT_HTTPS.'register.php', 0, 'url='.bin2hex(authcode($siteurl, 'ENCODE', 'CLOUD-REGISTER')));
 		if(!$ret){
 		  if($verbose){
 		    throw new Exception('Fail to connect to cloud system.');
@@ -46,7 +46,7 @@ class cloud {
 		}*/
 	}
 	public static function get_api_path(){
-		return getSetting('use_sae_api') ? self::API_ROOT_SAE : self::API_ROOT;
+		return getSetting('use_sae_api') ? self::API_ROOT_SAE : self::API_ROOT_HTTPS;
 	}
 	public static function sync(){
 		global $siteurl;
@@ -60,7 +60,7 @@ class cloud {
 		$parm_string = serialize($parms);
 		$parm_string = authcode($parm_string, 'ENCODE', self::key());
 		$parm_string = bin2hex($parm_string);
-		$res = kk_fetch_url(self::API_ROOT."{$api_name}.php?sid=".self::id(), 0, 'parm='.$parm_string);
+		$res = kk_fetch_url(self::API_ROOT_HTTPS."{$api_name}.php?sid=".self::id(), 0, 'parm='.$parm_string);
 		if (!$res) throw new Exception('Request remote api failed: empty response!');
 		$ret = unserialize($res);
 		if (!$ret) throw new Exception('Request remote api failed: decode fail');
@@ -73,7 +73,7 @@ class cloud {
 		$parm_string = serialize($parms);
 		$parm_string = authcode($parm_string, 'ENCODE', 'Tieba Sign API - DEBUG');
 		$parm_string = bin2hex($parm_string);
-		$res = kk_fetch_url(self::API_ROOT."{$api_name}.php?sid=0", 0, 'parm='.$parm_string);
+		$res = kk_fetch_url(self::API_ROOT_HTTPS."{$api_name}.php?sid=0", 0, 'parm='.$parm_string);
 		if (!$res) throw new Exception('Request remote api failed: empty response!');
 		$ret = unserialize($res);
 		if (!$ret) throw new Exception('Request remote api failed: decode fail');
@@ -86,7 +86,7 @@ class cloud {
 		$parm_string = serialize($parms);
 		$parm_string = authcode($parm_string, 'ENCODE', self::key());
 		$parm_string = bin2hex($parm_string);
-		$res = kk_fetch_url(self::API_ROOT."{$api_name}.php?sid=".self::id(), 0, 'parm='.$parm_string);
+		$res = kk_fetch_url(self::API_ROOT_HTTPS."{$api_name}.php?sid=".self::id(), 0, 'parm='.$parm_string);
 		if (!$res) return -1;
 		$ret = unserialize($res);
 		if (!$ret) return -2;
